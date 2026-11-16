@@ -13,14 +13,15 @@ jobs:
       with:
         ndk-version: r25c
         
-    - name: Build Module
+    - name: Build with ndk-build
       run: |
-        $ANDROID_NDK_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android24-clang++ -shared -fPIC -o libAnoBypass.so jni/main.cpp
+        cd jni
+        $ANDROID_NDK_HOME/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=./Android.mk NDK_APPLICATION_MK=./Application.mk
         
     - name: Prepare ZIP
       run: |
         mkdir -p module/zygisk
-        cp libAnoBypass.so module/zygisk/arm64-v8a.so
+        cp libs/arm64-v8a/libAnoBypass.so module/zygisk/arm64-v8a.so
         cd module
         zip -r ../AnoBypass.zip .
         
