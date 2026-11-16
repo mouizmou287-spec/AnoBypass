@@ -6,5 +6,5 @@
 #define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
 
 extern "C" [[gnu::visibility("default")]] void zygisk_module_entry(JNIEnv *env, jobject app) {
-    LOGI("AnoBypass: Module loaded successfully!");
+    LOGI("AnoBypass: Module loaded!");
 }
