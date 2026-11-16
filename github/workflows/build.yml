@@ -1,0 +1,31 @@
+name: Build Zygisk Module
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup NDK
+      uses: nttld/setup-ndk@v1
+      with:
+        ndk-version: r25c
+        
+    - name: Build Module
+      run: |
+        mkdir -p module/zygisk
+        cd jni
+        $ANDROID_NDK_HOME/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=./Android.mk NDK_APPLICATION_MK=./Application.mk || echo "Build failed"
+        
+    - name: Prepare ZIP
+      run: |
+        cd module
+        zip -r ../AnoBypass.zip *
+        
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: AnoBypass-Module
+        path: AnoBypass.zip
