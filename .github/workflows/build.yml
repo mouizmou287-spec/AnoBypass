@@ -13,14 +13,33 @@ jobs:
       with:
         ndk-version: r25c
         
-    - name: Build with ndk-build
+    - name: Build and Prepare
       run: |
+        # 1. Build the .so
         $ANDROID_NDK_HOME/ndk-build NDK_PROJECT_PATH=. APP_BUILD_SCRIPT=jni/Android.mk NDK_APPLICATION_MK=jni/Application.mk
+        
+        # 2. Create module structure
+        mkdir -p module/zygisk
+        cp libs/arm64-v8a/libAnoBypass.so module/zygisk/arm64-v8a.so
+        
+        # 3. Create module.prop
+        cat > module/module.prop << 'EOF'
+        id=anobypass
+        name=AnoBypass Zygisk
+        version=v1.0
+        versionCode=1
+        author=ironhawk909
+        description=Stealth bypass for PUBG Mobile.
+        EOF
+        
+        # 4. Create customize.sh
+        cat > module/customize.sh << 'EOF'
+        #!/sbin/sh
+        EOF
+        chmod +x module/customize.sh
         
     - name: Prepare ZIP
       run: |
-        mkdir -p module/zygisk
-        cp libs/arm64-v8a/libAnoBypass.so module/zygisk/arm64-v8a.so
         cd module
         zip -r ../AnoBypass.zip .
         
